@@ -1,7 +1,18 @@
 {%- comment -%}
-  extensions/dtf-configurator/blocks/dtf-configurator.liquid
-  DTF Gang Sheet Configurator – Theme App Extension Block
-  Renders the configurator iframe via App Proxy on the storefront.
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
 {%- endcomment -%}
 
 {% assign configurator_url = shop.url | append: '/apps/dtf-configurator' %}
