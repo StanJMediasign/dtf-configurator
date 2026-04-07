@@ -1,0 +1,146 @@
+// app/services/jobService.server.ts
+import { prisma } from "~/lib/prisma.server";
+import type { CanvasItem, AdminJob } from "~/types";
+import { uploadPreviewImage } from "~/services/uploadService.server";
+import { generateLayoutPreview } from "~/services/previewService.server";
+import { v4 as uuidv4 } from "uuid";
+
+export interface CreateJobInput {
+  shop: string;
+  items: CanvasItem[];
+  usedLengthCm: number;
+  trimMarginMm: number;
+  subtotalExVat: number;
+  pricingTier: string;
+  layoutJson: object;
+}
+
+export async function createJob(input: CreateJobInput): Promise<string> {
+  const jobId = uuidv4();
+
+  // Generate preview image
+  const previewBuffer = await generateLayoutPreview(input.items, {
+    usedLengthCm: input.usedLengthCm,
+    trimMarginMm: input.trimMarginMm,
+  });
+
+  const previewUrl = await uploadPreviewImage(previewBuffer, jobId);
+
+  await prisma.job.create({
+    data: {
+      id: jobId,
+      shop: input.shop,
+      status: "NEW",
+      previewUrl,
+      sheetWidthCm: 55,
+      usedLengthCm: input.usedLengthCm,
+      trimMarginMm: input.trimMarginMm,
+      subtotalExVat: input.subtotalExVat,
+      pricingTier: input.pricingTier,
+      layoutJson: input.layoutJson,
+      items: {
+        create: input.items.map((item) => ({
+          fileUrl: item.fileUrl,
+          fileName: item.name,
+          x: item.x,
+          y: item.y,
+          width: item.width,
+          height: item.height,
+          rotation: item.rotation,
+          dpi: item.dpi,
+          mimeType: "image/png",
+        })),
+      },
+    },
+  });
+
+  return jobId;
+}
+
+export async function getJob(jobId: string): Promise<AdminJob | null> {
+  const job = await prisma.job.findUnique({
+    where: { id: jobId },
+    include: { items: true },
+  });
+
+  if (!job) return null;
+
+  return {
+    ...job,
+    orderId: job.orderId,
+    orderNumber: job.orderNumber,
+    customerEmail: job.customerEmail,
+    customerName: job.customerName,
+    status: job.status as AdminJob["status"],
+    layoutJson: job.layoutJson as object | null,
+    createdAt: job.createdAt.toISOString(),
+    updatedAt: job.updatedAt.toISOString(),
+    items: job.items.map((item) => ({
+      ...item,
+      dpi: item.dpi,
+      fileSize: item.fileSize,
+      mimeType: item.mimeType,
+    })),
+  };
+}
+
+export async function getJobsByShop(
+  shop: string,
+  page = 1,
+  pageSize = 20
+): Promise<{ jobs: AdminJob[]; total: number }> {
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where: { shop },
+      include: { items: true },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.job.count({ where: { shop } }),
+  ]);
+
+  return {
+    jobs: jobs.map((job) => ({
+      ...job,
+      orderId: job.orderId,
+      orderNumber: job.orderNumber,
+      customerEmail: job.customerEmail,
+      customerName: job.customerName,
+      status: job.status as AdminJob["status"],
+      layoutJson: job.layoutJson as object | null,
+      createdAt: job.createdAt.toISOString(),
+      updatedAt: job.updatedAt.toISOString(),
+      items: job.items.map((item) => ({
+        ...item,
+        dpi: item.dpi,
+        fileSize: item.fileSize,
+        mimeType: item.mimeType,
+      })),
+    })),
+    total,
+  };
+}
+
+export async function updateJobStatus(
+  jobId: string,
+  status: "NEW" | "IN_PRODUCTION" | "COMPLETED" | "CANCELLED"
+): Promise<void> {
+  await prisma.job.update({
+    where: { id: jobId },
+    data: { status },
+  });
+}
+
+export async function linkJobToOrder(
+  jobId: string,
+  orderId: string,
+  orderNumber: string,
+  customerEmail?: string,
+  customerName?: string
+): Promise<void> {
+  await prisma.job.update({
+    where: { id: jobId },
+    data: { orderId, orderNumber, customerEmail, customerName },
+  });
+}

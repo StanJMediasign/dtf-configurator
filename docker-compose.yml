@@ -1,0 +1,78 @@
+// app/services/cartService.ts
+// Runs on client-side (storefront)
+import type { CartPayload, CartResponse } from "~/types";
+import { calculatePrice } from "~/lib/pricingEngine";
+
+interface ShopifyCartItem {
+  id: string; // variant ID (numeric)
+  quantity: number;
+  properties: Record<string, string>;
+}
+
+interface ShopifyCartAddResponse {
+  items: Array<{
+    id: number;
+    quantity: number;
+    variant_id: number;
+    title: string;
+    price: number;
+    line_price: number;
+    properties: Record<string, string>;
+  }>;
+}
+
+export async function addToShopifyCart(
+  payload: CartPayload & { variantId: string; finalPrice: number }
+): Promise<CartResponse> {
+  const price = calculatePrice(payload.usedLengthCm);
+
+  const properties: Record<string, string> = {
+    _job_id: payload.jobId,
+    _used_length_cm: payload.usedLengthCm.toFixed(1),
+    _used_length_m: (payload.usedLengthCm / 100).toFixed(3),
+    _item_count: String(payload.items.length),
+    _trim_margin_mm: String(payload.trimMarginMm),
+    _sheet_width_cm: String(payload.sheetWidthCm),
+    _pricing_tier: price.tierLabel,
+    _price_per_cm: price.pricePerCm.toFixed(4),
+    "Print details": `${payload.usedLengthCm.toFixed(1)} cm × 55 cm | ${payload.items.length} item(s)`,
+  };
+
+  const cartItem: ShopifyCartItem = {
+    id: payload.variantId,
+    quantity: 1,
+    properties,
+  };
+
+  const response = await fetch("/cart/add.js", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      items: [cartItem],
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: "Cart error" }));
+    return {
+      success: false,
+      error: error.description || error.message || "Failed to add to cart",
+    };
+  }
+
+  return {
+    success: true,
+    jobId: payload.jobId,
+    redirectUrl: "/cart",
+  };
+}
+
+export async function getShopifyCart(): Promise<object> {
+  const response = await fetch("/cart.js", {
+    headers: { Accept: "application/json" },
+  });
+  return response.json();
+}

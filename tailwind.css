@@ -1,0 +1,146 @@
+// app/types/index.ts
+
+export interface UploadedFile {
+  id: string;
+  name: string;
+  url: string;
+  previewUrl: string;
+  width: number;
+  height: number;
+  widthCm: number;
+  heightCm: number;
+  dpi: number;
+  mimeType: string;
+  fileSize: number;
+  hasTransparency: boolean;
+  hasBackground: boolean;
+  warnings: FileWarning[];
+}
+
+export interface FileWarning {
+  type: "low_dpi" | "has_background" | "large_file" | "no_transparency";
+  message: string;
+  severity: "warning" | "error";
+}
+
+export interface CanvasItem {
+  id: string;
+  fileId: string;
+  fileUrl: string;
+  previewUrl: string;
+  name: string;
+  x: number; // in canvas pixels
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  widthCm: number;
+  heightCm: number;
+  dpi: number;
+  scaleX: number;
+  scaleY: number;
+  isSelected: boolean;
+  opacity: number;
+}
+
+export interface CanvasState {
+  items: CanvasItem[];
+  selectedIds: string[];
+  zoom: number;
+  panX: number;
+  panY: number;
+  showGuidelines: boolean;
+  trimMarginMm: number;
+}
+
+export interface PriceTier {
+  minCm: number;
+  maxCm: number | null;
+  pricePerCm: number;
+  label: string;
+}
+
+export const PRICE_TIERS: PriceTier[] = [
+  { minCm: 0, maxCm: 499, pricePerCm: 0.149, label: "0–499 cm" },
+  { minCm: 500, maxCm: 999, pricePerCm: 0.145, label: "500–999 cm" },
+  { minCm: 1000, maxCm: 1999, pricePerCm: 0.144, label: "1.000–1.999 cm" },
+  { minCm: 2000, maxCm: 4999, pricePerCm: 0.140, label: "2.000–4.999 cm" },
+  { minCm: 5000, maxCm: null, pricePerCm: 0.135, label: "5.000+ cm" },
+];
+
+export const SHEET_WIDTH_CM = 55;
+export const SHEET_WIDTH_PX = 550; // 10px per cm for canvas
+export const CM_TO_PX = 10;
+export const PX_TO_CM = 0.1;
+export const MIN_ORDER_EUR = 14.90;
+export const MIN_LENGTH_CM = Math.ceil(MIN_ORDER_EUR / PRICE_TIERS[0].pricePerCm);
+
+export interface PriceCalculation {
+  usedLengthCm: number;
+  usedLengthM: number;
+  pricePerCm: number;
+  subtotal: number;
+  meetsMinimum: boolean;
+  minimumCharge: number;
+  finalPrice: number;
+  tierLabel: string;
+}
+
+export interface NestingResult {
+  items: CanvasItem[];
+  usedLengthCm: number;
+  efficiency: number;
+}
+
+export interface CartPayload {
+  jobId: string;
+  layoutJson: object;
+  items: CanvasItem[];
+  usedLengthCm: number;
+  trimMarginMm: number;
+  sheetWidthCm: number;
+}
+
+export interface CartResponse {
+  success: boolean;
+  jobId?: string;
+  error?: string;
+  redirectUrl?: string;
+}
+
+export type JobStatus = "NEW" | "IN_PRODUCTION" | "COMPLETED" | "CANCELLED";
+
+export interface AdminJob {
+  id: string;
+  shop: string;
+  orderId: string | null;
+  orderNumber: string | null;
+  customerEmail: string | null;
+  customerName: string | null;
+  status: JobStatus;
+  previewUrl: string | null;
+  layoutJson: object | null;
+  sheetWidthCm: number;
+  usedLengthCm: number;
+  trimMarginMm: number;
+  subtotalExVat: number;
+  pricingTier: string;
+  createdAt: string;
+  updatedAt: string;
+  items: AdminJobItem[];
+}
+
+export interface AdminJobItem {
+  id: string;
+  jobId: string;
+  fileUrl: string;
+  fileName: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  dpi: number | null;
+  fileSize: number | null;
+  mimeType: string | null;
+}
