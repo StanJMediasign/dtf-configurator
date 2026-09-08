@@ -23,6 +23,10 @@ PF Concept heeft **wel** een integratie (datafeeds plus een order-Gateway), maar
 
 Voor pinkprint.com is **Logo Express** de sleutel: één order bij PF Concept levert een bedrukt product. Zonder Logo Express zouden we blanco goederen moeten laten komen en zelf bedrukken (mogelijk voor textiel via onze DTF-lijn, niet voor pennen, mokken, powerbanks).
 
+## Officiële bron: Data Feeds & Gateway (achter klantlogin)
+
+De actuele documentatie staat op `https://www.pfconcept.com/en_nl/data-feeds-gateway/`. Die pagina is een klantlogin: zonder distributeursaccount is de inhoud niet zichtbaar, en vanuit deze omgeving was de site sowieso niet bereikbaar. Gebruik van de XML/JSON-feeds en de Online Gateway valt onder aparte gebruiksvoorwaarden die boven de algemene voorwaarden gaan. Zodra de inhoud van die pagina beschikbaar is, wordt onderstaande sectie vervangen door de officiële specificatie.
+
 ## Datafeeds (wat publiek bekend is)
 
 | Feed | Inhoud | Opmerking |
@@ -75,6 +79,7 @@ Aanbeveling: eigen feedkoppeling als hoofdroute, Promidata als plan B of als ver
 
 ## Bronnen
 
+- https://www.pfconcept.com/en_nl/data-feeds-gateway/ (Data Feeds & Gateway, klantlogin)
 - https://www.pfconcept.com/en_nl/xml_specialist
 - https://www.pfconcept.com/en_nl/sales-marketing-support
 - https://www.pfconcept.com/en_nl/catalogue-features
