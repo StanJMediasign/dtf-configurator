@@ -13,7 +13,7 @@ De drie genoemde leveranciers:
 |---|---|---|
 | **Probo** (probo.nl / proboprints.com) | Large format print: spandoeken, stickers, vlaggen, plaatmateriaal, textiel, wanddecoratie | Volwassen REST API, goed gedocumenteerd, wij kennen hem al |
 | **PF Concept** (pfconcept.com) | Relatiegeschenken en promotieartikelen, 6.500+ items, met bedrukking (Logo Express) | XML/JSON datafeeds plus order-Gateway. Alleen voor geregistreerde wederverkopers. Documentatie pas zichtbaar na account |
-| **Araco International** (araco.nl) | Promotioneel textiel: headwear (Nilton's), badtextiel (Sophie Muval), werkkleding (Brickstone), custom made (4YOU), eigen bedrukking en borduring | Geen eigen publieke API. Productdata via Promidata (code A86), orders via dealerwebshop of e-mail. Order-API bij Araco uitvragen |
+| **Araco International** (araco.nl) | Promotioneel textiel: headwear (Nilton's), badtextiel (Sophie Muval), werkkleding (Brickstone), custom made (4YOU), eigen bedrukking en borduring | API beschikbaar via het dealeraccount op shop.araco.nl (pagina account/apis). Documentatie nog op te halen. Productdata ook via Promidata (code A86) |
 
 ## Het korte antwoord
 
@@ -27,7 +27,7 @@ De grootste risico's zitten niet in de techniek maar in **accounts en data-toega
 
 1. PF Concept levert uitsluitend aan geregistreerde distributeurs (B2B2B, circa 10.000 resellers). Zonder distributeursaccount geen feed, geen Gateway en geen prijzen.
 2. De echte PF Concept Gateway-documentatie (endpoints, orderformaat, statusterugkoppeling) staat achter het klantportaal. Wat hieronder staat komt uit publieke bronnen en de oude System Integration Manual (v1.6, 2015). Details moeten na accountaanvraag bevestigd worden bij hun API/XML-specialist.
-3. Araco heeft geen order-API die publiek bekend is. Volledig automatische Araco-orders hangen af van wat Araco (of Promidata's Promotional Office) voor dealers beschikbaar stelt.
+3. Araco's API-documentatie staat achter de dealer-login (shop.araco.nl/account/apis) en is nog niet vastgelegd in dit rapport.
 
 ## Wat er in deze map staat
 

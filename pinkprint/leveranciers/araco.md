@@ -2,9 +2,15 @@
 
 Araco International B.V. (Jaargetijdenweg 90, Enschede) is een groothandel en importeur van promotionele relatiegeschenken met 35 jaar ervaring en een specialisatie in textiel. Levert aan wederverkopers (B2B). Voor pinkprint.com is dit de leverancier voor bedrukt en geborduurd textiel, headwear, badtextiel en werkkleding.
 
-## Belangrijkste conclusie
+## Update 8 september 2026: Araco heeft wel een API
 
-Araco heeft **geen eigen publieke API**. Wel zijn er twee bruikbare routes:
+Stan meldt dat Araco een API aanbiedt via het dealeraccount op de webshop: `https://shop.araco.nl/account/apis`. Die pagina zit achter de dealer-login en was vanuit deze omgeving niet bereikbaar, dus de inhoud (endpoints, authenticatie, formaten, orderflow) is nog niet vastgelegd. Zodra de documentatie of een export van die pagina beschikbaar is, wordt dit bestand aangevuld en verschuift Araco in de hub van `orderChannel: "manual"` naar `"api"`.
+
+Wat dit al verandert: de aanname "geen order-API" hieronder is achterhaald. De Promidata-route blijft relevant als gedeelde datalaag, maar de primaire koppeling wordt Araco's eigen API.
+
+## Eerdere conclusie (publieke bronnen, deels achterhaald)
+
+Publiek was er **geen API van Araco** vindbaar. De twee routes die toen overbleven:
 
 1. **Productdata via Promidata.** Araco is "connected member" bij Promidata (leverancierscode A86). Promidata levert een XML- of JSON-feed / webservice met artikelen, prijzen, afbeeldingen en (waar de leverancier het publiceert) voorraad. Dat is dezelfde route die ook voor PF Concept kan gelden, dus één importformaat voor twee leveranciers.
 2. **Orders via de dealer-webshop of e-mail/EDI.** Araco heeft een dealerwebshop (de Britse variant draait op shop.araco.co.uk; de Nederlandse op araco.nl). Of die shop een order-API voor dealers biedt, is niet publiek te vinden en moet bij Araco uitgevraagd worden.
@@ -35,7 +41,7 @@ Uit voorraad leverbaar, met bedrukking of borduring in eigen productielocaties i
 | Productdata | Via Promidata, code A86. Formaat XML/JSON, dagelijkse updates. Abonnement nodig (Basic: max 10 leveranciers, Premium: onbeperkt, prijs op aanvraag) |
 | Prijzen | Staffelprijzen per artikel, decoratieprijzen apart. Structuur in de Promidata-feed te controleren |
 | Voorraad | Promidata kan voorraad periodiek importeren als de leverancier die publiceert. Of Araco dat doet: uitvragen |
-| Orderplaatsing | Geen publieke API gevonden. Dealerwebshop, e-mail, of via Promidata's Promotional Office (ERP). Uitvragen of Araco EDI/API-orders van dealers accepteert |
+| Orderplaatsing | API via het dealeraccount (shop.araco.nl/account/apis). Details nog vast te leggen |
 | Artwork en proof | Onbekend. Waarschijnlijk per e-mail met digitale proof |
 | Dropship / neutraal verzenden | Onbekend, uitvragen |
 | Minimum afname | Onbekend, per artikel en decoratietechniek. Uitvragen |
