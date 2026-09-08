@@ -6,8 +6,8 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 
 | Actie | Eigenaar | Blokkeert |
 |---|---|---|
-| Araco: dealeraccount bevestigen en vragen naar order-API/EDI, voorraadfeed, dropship, MOQ, decoratieprijslijst | Stan | Fase 4 |
-| Promidata: Promotional Data aanvragen met Araco (A86) en PF Concept, feedspecificatie en proeffeed | Stan, daarna dev | Fase 2 en 4 |
+| Araco: "Vraag documentatie aan" op shop.araco.nl/account/apis, API-toegang laten activeren, zeven open vragen uit `leveranciers/araco.md` stellen | Stan | Fase 2 |
+| Promidata: alleen nog nodig als PF Concept-feeds uitblijven | Stan | Plan B |
 | PF Concept distributeursaccount aanvragen (KvK, btw, omschrijving pinkprint.com) | Stan | Fase 2 en 3 |
 | PF Concept API/XML-specialist om Gateway-spec, feeds, dropship-voorwaarden en testomgeving vragen | Stan, daarna dev | Fase 2 en 3 |
 | Probo: apart account of apart API-token voor pinkprint.com | Stan | Fase 1 |
@@ -24,26 +24,27 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 - Orderrouting: Shopify webhook, sub-orders, fulfillment per sub-order.
 - Resultaat: pinkprint.com verkoopt spandoeken, stickers, vlaggen, plaatmateriaal en textiel, white label geleverd.
 
-## Fase 2: PF Concept catalogus (circa 3 tot 4 weken na feedtoegang)
+## Fase 2: Araco textiel via API (circa 3 tot 4 weken na documentatie)
+
+- Araco-adapter: Productinformatie API voor catalogus en prijzen, Voorraad API voor beschikbaarheid en levertijd, Order API voor doorzetting en statusnotificaties.
+- Per categorie beslissen: Araco decoreert (borduren, grote series) of wij bedrukken blanco met DTF via de bestaande configurator (`decoration_route`).
+- Shopify-producten met varianten (kleur, maat) en decoratiekeuze als line item property, MOQ afdwingen.
+- Resultaat: caps, handdoeken, werkkleding en shirts bestelbaar, deels met eigen DTF-decoratie en hogere marge.
+
+Waarom Araco vóór PF Concept: volledige API-set, toegang voor alle geregistreerde klanten zonder distributeursdrempel, en directe synergie met onze eigen productie.
+
+## Fase 3: PF Concept catalogus (circa 3 tot 4 weken na feedtoegang)
 
 - Feed-importer: product-XML, print-data-XML, print-price-XML, Label-XML, afbeeldingen.
 - Prijstabellen: staffel + decoratie + instelkosten, marge-regels.
-- Shopify-producten met varianten (kleur, maat) en decoratiekeuze als line item property.
-- MOQ afdwingen in winkelwagen.
+- Shopify-producten met varianten en decoratiekeuze, MOQ in winkelwagen.
 - Resultaat: gecureerde selectie relatiegeschenken zichtbaar en bestelbaar, orders nog handmatig bij PF geplaatst vanuit de admin.
 
-## Fase 3: PF Concept orderdoorzetting (circa 2 tot 4 weken, afhankelijk van de Gateway)
+## Fase 4: PF Concept orderdoorzetting (circa 2 tot 4 weken, afhankelijk van de Gateway)
 
 - Gateway-adapter: order plaatsen, Logo Express-artwork per printpositie, proof-flow (`awaiting_proof`), status (webhook of polling).
 - Dropship: neutrale verzending aan eindklant bevestigd en getest.
 - Resultaat: volledig automatische promo-orders.
-
-## Fase 4: Araco textiel (circa 2 tot 3 weken na Promidata-feed)
-
-- Promidata-importer hergebruiken (of bouwen als PF Concept via eigen feeds loopt) voor Araco-artikelen: Nilton's, Sophie Muval, Brickstone, 4YOU.
-- Per categorie beslissen: Araco decoreert, of wij bedrukken blanco met DTF via de bestaande configurator (`decoration_route`).
-- Orderplaatsing semi-handmatig: hub maakt de inkooporder met artwork klaar, admin verstuurt. Automatiseren zodra Araco een order-API bevestigt.
-- Resultaat: caps, handdoeken, werkkleding en shirts bestelbaar, deels met eigen DTF-decoratie en hogere marge.
 
 ## Fase 5: uitbouw
 
@@ -67,4 +68,4 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 | Split-shipments verwarren klanten | Klachten, retouren | Duidelijke communicatie in checkout en per-pakket track & trace |
 | Proof-flow bij promo vertraagt orders | Lagere conversie | Proof direct in de klantaccount, herinneringsmails, optie "geen proof nodig" bij herhaalorders |
 | Probo-component voldoet niet aan onze UX | Configurator opnieuw bouwen | Vanaf dag 1 achter onze eigen interface plaatsen zodat vervanging lokaal blijft |
-| Araco biedt geen order-API | Araco-orders blijven handwerk | Hub bereidt de order volledig voor, admin verstuurt met één klik; volume bepaalt of dit acceptabel blijft |
+| Araco Order API ondersteunt geen decoratie of dropship | Textielorders deels handwerk | Direct uitvragen in de documentatie-aanvraag; blanco's via API, decoratie-orders via e-mail als fallback |

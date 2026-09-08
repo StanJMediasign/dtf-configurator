@@ -2,20 +2,27 @@
 
 Araco International B.V. (Jaargetijdenweg 90, Enschede) is een groothandel en importeur van promotionele relatiegeschenken met 35 jaar ervaring en een specialisatie in textiel. Levert aan wederverkopers (B2B). Voor pinkprint.com is dit de leverancier voor bedrukt en geborduurd textiel, headwear, badtextiel en werkkleding.
 
-## Update 8 september 2026: Araco heeft wel een API
+## Araco API's (bron: dealerpagina shop.araco.nl/account/apis, 8 september 2026)
 
-Stan meldt dat Araco een API aanbiedt via het dealeraccount op de webshop: `https://shop.araco.nl/account/apis`. Die pagina zit achter de dealer-login en was vanuit deze omgeving niet bereikbaar, dus de inhoud (endpoints, authenticatie, formaten, orderflow) is nog niet vastgelegd. Zodra de documentatie of een export van die pagina beschikbaar is, wordt dit bestand aangevuld en verschuift Araco in de hub van `orderChannel: "manual"` naar `"api"`.
+Araco biedt via het dealeraccount drie API's aan. Toegang is beschikbaar voor alle geregistreerde klanten, de technische documentatie wordt na activering verstrekt. Contactpersoon: Dennis Haarman, Productowner bij Araco. Op de pagina staat een knop "Vraag documentatie aan".
 
-Wat dit al verandert: de aanname "geen order-API" hieronder is achterhaald. De Promidata-route blijft relevant als gedeelde datalaag, maar de primaire koppeling wordt Araco's eigen API.
+| API | Wat Araco erover zegt | Rol in pinkprint.com |
+|---|---|---|
+| **Voorraad API** | Actuele voorraadsituatie: beschikbaarheid, levertermijnen en stockstatus per product. Bedoeld voor integratie in eigen voorraadbeheer of e-commerce platform | Voorraad en levertijd tonen op de productpagina, blanco's reserveren voor eigen DTF-productie |
+| **Productinformatie API** | Complete productdetails: basisinformatie, technische specificaties, prijzen, afbeeldingen en beschrijvingen. Bedoeld om eigen catalogus of webshop automatisch actueel te houden | Catalogusimport rechtstreeks bij de bron, in plaats van (of naast) Promidata |
+| **Order API** | Orders plaatsen en beheren vanuit de eigen applicatie, voortgang monitoren, automatische notificaties bij statuswijzigingen, centraal overzicht van alle orders | Orderdoorzetting en statussync, hetzelfde patroon als Probo |
 
-## Eerdere conclusie (publieke bronnen, deels achterhaald)
+Wat de pagina **niet** zegt en de documentatie moet beantwoorden:
 
-Publiek was er **geen API van Araco** vindbaar. De twee routes die toen overbleven:
+1. Authenticatie (API-key, OAuth, Basic) en base URL. De pagina noemt alleen "industry-standard beveiliging".
+2. Formaat (JSON of XML) en of er een OpenAPI/Swagger-specificatie is.
+3. Hoe decoratie in een order wordt meegegeven: techniek (bedrukken, borduren), positie, kleuren, artwork-bestand, proof-goedkeuring.
+4. Hoe "automatische notificaties bij statuswijzigingen" technisch werken: webhook naar onze URL of polling.
+5. Of de Order API dropship aan de eindklant met neutrale verzending ondersteunt, en of er track & trace in de status zit.
+6. Of prijzen in de Productinformatie API klantspecifiek zijn (dealerprijs, staffels) en of decoratieprijzen erin zitten.
+7. Testomgeving of testorders, en rate limits.
 
-1. **Productdata via Promidata.** Araco is "connected member" bij Promidata (leverancierscode A86). Promidata levert een XML- of JSON-feed / webservice met artikelen, prijzen, afbeeldingen en (waar de leverancier het publiceert) voorraad. Dat is dezelfde route die ook voor PF Concept kan gelden, dus één importformaat voor twee leveranciers.
-2. **Orders via de dealer-webshop of e-mail/EDI.** Araco heeft een dealerwebshop (de Britse variant draait op shop.araco.co.uk; de Nederlandse op araco.nl). Of die shop een order-API voor dealers biedt, is niet publiek te vinden en moet bij Araco uitgevraagd worden.
-
-Alles hieronder komt uit publieke bronnen. De site araco.nl zelf was vanuit deze omgeving niet bereikbaar. Verifiëren na dealeraccount.
+Gevolg voor de hub: Araco verschuift van `orderChannel: "manual"` naar `"api"`. Het profiel blijft catalogus-gedreven (staffels, decoratie, MOQ), maar met een volledige API-set, wat Araco technisch dichter bij Probo brengt dan bij PF Concept.
 
 ## Assortiment en merken
 
@@ -38,31 +45,32 @@ Uit voorraad leverbaar, met bedrukking of borduring in eigen productielocaties i
 
 | Onderwerp | Status |
 |---|---|
-| Productdata | Via Promidata, code A86. Formaat XML/JSON, dagelijkse updates. Abonnement nodig (Basic: max 10 leveranciers, Premium: onbeperkt, prijs op aanvraag) |
-| Prijzen | Staffelprijzen per artikel, decoratieprijzen apart. Structuur in de Promidata-feed te controleren |
-| Voorraad | Promidata kan voorraad periodiek importeren als de leverancier die publiceert. Of Araco dat doet: uitvragen |
-| Orderplaatsing | API via het dealeraccount (shop.araco.nl/account/apis). Details nog vast te leggen |
+| Productdata | Productinformatie API van Araco zelf (na activering). Alternatief: Promidata, code A86 |
+| Prijzen | In de Productinformatie API. Of het dealerprijzen met staffels en decoratieprijzen zijn: documentatie |
+| Voorraad | Voorraad API: beschikbaarheid, levertermijn, stockstatus per product |
+| Orderplaatsing | Order API: plaatsen, beheren, voortgang, statusnotificaties |
 | Artwork en proof | Onbekend. Waarschijnlijk per e-mail met digitale proof |
 | Dropship / neutraal verzenden | Onbekend, uitvragen |
 | Minimum afname | Onbekend, per artikel en decoratietechniek. Uitvragen |
-| Status / track & trace | Onbekend |
+| Status / track & trace | Statusnotificaties via de Order API. Mechanisme (webhook/polling) en track & trace: documentatie |
 
 ## Profiel voor de hub
 
 Araco is een **catalogus-gedreven groothandel**, hetzelfde profiel als PF Concept. De adapter volgt het PF-patroon (feed-import, staffels, decoratieprijzen, MOQ), met twee verschillen:
 
-- Data komt uit **één Promidata-importer** die ook voor PF Concept kan dienen.
-- Orderplaatsing is waarschijnlijk **semi-handmatig** in fase 1: de hub maakt de inkooporder klaar (artikel, aantal, decoratie, artwork, adres) en stuurt die per e-mail of zet hem klaar voor de dealerwebshop. Automatiseren zodra Araco een order-API bevestigt.
+- Data komt uit de **Productinformatie API** en de **Voorraad API** van Araco. Promidata blijft een optie als we PF Concept en Araco in één formaat willen inlezen, maar is niet meer nodig.
+- Orderplaatsing via de **Order API**, met statusnotificaties naar de hub. Zelfde adapterpatroon als Probo.
 - Voor artikelen die wij zelf met DTF bedrukken routeert de hub naar **intern** met Araco als inkoopbron (blanco bestellen op eigen voorraad of per order).
 
 ## Wat we nu moeten doen
 
-1. Dealeraccount bij Araco aanvragen of het bestaande Mediasign-account gebruiken. Vragen: order-API of EDI, voorraadfeed, dropship, MOQ, decoratieprijslijst, proofproces.
-2. Promidata benaderen voor Promotional Data met in elk geval Araco (A86) en PF Concept. Vraag de feedspecificatie en een proeffeed.
+1. Op shop.araco.nl/account/apis op "Vraag documentatie aan" klikken, of Dennis Haarman rechtstreeks benaderen. Vraag meteen de zeven punten hierboven uit.
+2. API-toegang laten activeren op het account dat pinkprint.com gaat gebruiken.
 3. Bepalen welke Araco-categorieën we zelf met DTF bedrukken en welke Araco decoreert.
 
 ## Bronnen
 
+- Araco dealerpagina API's (achter login): https://shop.araco.nl/account/apis
 - Promidata connected member Araco International BV (A86): https://www.promidata.com/connected-member/araco-international-bv-a86-3/
 - Promidata Promotional Data (XML/JSON): https://www.promidata.com/nl/promotional-xml-of-json-data/
 - Promidata voor leveranciers (voorraadkoppeling): https://www.promidata.com/en/for-suppliers-en/

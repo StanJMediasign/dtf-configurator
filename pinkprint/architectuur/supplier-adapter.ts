@@ -18,7 +18,7 @@ export interface SupplierCapabilities {
   proofApproval: boolean; // digitale proof verplicht voor productie
   statusPush: "webhook" | "polling" | "none";
   testOrders: boolean;
-  /** "api": order via API; "manual": hub bereidt de order voor, admin verstuurt (Araco tot er een API is). */
+  /** "api": order via API (Probo, Araco); "manual": hub bereidt de order voor, admin verstuurt (fallback). */
   orderChannel: "api" | "manual";
 }
 
