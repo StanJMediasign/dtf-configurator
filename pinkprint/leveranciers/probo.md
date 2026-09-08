@@ -50,7 +50,7 @@ Probo publiceert een open source web component (`ProboConnect/product-configurat
 - `window.connectConfigurator.getResult()` geeft de payload (productcode, gekozen opties, taal) die je in de orderpayload stopt.
 - Vereist een **backend proxy**: het token mag nooit in de browser staan. Onze hub is die proxy.
 
-Voor pinkprint.com is dit een snelle start voor de Probo-producten. Op termijn vervang je hem door een eigen configurator zodat PF Concept en de derde leverancier dezelfde UI krijgen.
+Voor pinkprint.com is dit een snelle start voor de Probo-producten. Op termijn vervang je hem door een eigen configurator zodat PF Concept en Araco dezelfde UI krijgen.
 
 ## Kant-en-klare koppelingen (ter referentie)
 

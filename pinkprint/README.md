@@ -13,7 +13,7 @@ De drie genoemde leveranciers:
 |---|---|---|
 | **Probo** (probo.nl / proboprints.com) | Large format print: spandoeken, stickers, vlaggen, plaatmateriaal, textiel, wanddecoratie | Volwassen REST API, goed gedocumenteerd, wij kennen hem al |
 | **PF Concept** (pfconcept.com) | Relatiegeschenken en promotieartikelen, 6.500+ items, met bedrukking (Logo Express) | XML/JSON datafeeds plus order-Gateway. Alleen voor geregistreerde wederverkopers. Documentatie pas zichtbaar na account |
-| **"Aracal.nl"** | Onbekend | **Niet gevonden.** Zie `leveranciers/aracal.md`. Naam of domein moet bevestigd worden |
+| **Araco International** (araco.nl) | Promotioneel textiel: headwear (Nilton's), badtextiel (Sophie Muval), werkkleding (Brickstone), custom made (4YOU), eigen bedrukking en borduring | Geen eigen publieke API. Productdata via Promidata (code A86), orders via dealerwebshop of e-mail. Order-API bij Araco uitvragen |
 
 ## Het korte antwoord
 
@@ -21,13 +21,13 @@ De drie genoemde leveranciers:
 
 - **Probo** rekent per configuratie (materiaal x afmeting x aantal x afwerking). Prijs is pas bekend na een live API-call. Levering is white label, vaak volgende dag, vanaf 1 stuk.
 - **PF Concept** werkt met staffelprijzen per artikel plus aparte decoratieprijzen per printtechniek (printcodes) plus instelkosten. Prijzen komen uit dagelijkse XML-feeds en kun je vooraf berekenen. Minimum afnames en langere levertijden bij bedrukking.
-- **Derde leverancier** onbekend, maar de hub-architectuur is zo ontworpen dat een derde adapter erin past zonder de winkel te verbouwen.
+- **Araco** is een catalogus-gedreven textielgroothandel zonder eigen API. Data via Promidata, orders in fase 1 semi-handmatig. Extra kans: Araco levert blanco textiel dat wij zelf met DTF bedrukken.
 
 De grootste risico's zitten niet in de techniek maar in **accounts en data-toegang**:
 
 1. PF Concept levert uitsluitend aan geregistreerde distributeurs (B2B2B, circa 10.000 resellers). Zonder distributeursaccount geen feed, geen Gateway en geen prijzen.
 2. De echte PF Concept Gateway-documentatie (endpoints, orderformaat, statusterugkoppeling) staat achter het klantportaal. Wat hieronder staat komt uit publieke bronnen en de oude System Integration Manual (v1.6, 2015). Details moeten na accountaanvraag bevestigd worden bij hun API/XML-specialist.
-3. Aracal.nl bestaat niet vindbaar. Zolang die naam niet klopt, kan de derde adapter niet worden uitgewerkt.
+3. Araco heeft geen order-API die publiek bekend is. Volledig automatische Araco-orders hangen af van wat Araco (of Promidata's Promotional Office) voor dealers beschikbaar stelt.
 
 ## Wat er in deze map staat
 
@@ -35,7 +35,7 @@ De grootste risico's zitten niet in de techniek maar in **accounts en data-toega
 |---|---|
 | `leveranciers/probo.md` | Probo Reseller API: endpoints, auth, artwork, orderflow, webhooks, configurator-component |
 | `leveranciers/pf-concept.md` | PF Concept datafeeds, printcodes, Gateway, accountvereisten, alternatief via Promidata |
-| `leveranciers/aracal.md` | Wat er is gezocht, waarom het niet gevonden is, en welke kandidaten het kunnen zijn |
+| `leveranciers/araco.md` | Araco International: assortiment, Promidata-route, ontbrekende order-API, DTF-kans |
 | `architectuur.md` | Doelarchitectuur voor één winkel op meerdere leveranciers: catalogus, prijzen, artwork, orderrouting, statussen |
 | `architectuur/supplier-adapter.ts` | TypeScript-schets van de uniforme leveranciers-interface (geen werkende code, wel het contract) |
 | `roadmap.md` | Fasering, openstaande acties, inschatting en beslispunten |
@@ -46,7 +46,7 @@ De grootste risico's zitten niet in de techniek maar in **accounts en data-toega
 2. Start met **Probo**: de API is bekend, white label, vanaf 1 stuk. Dat is de snelste weg naar een werkende winkel met spandoeken, stickers en vlaggen.
 3. Vraag **vandaag** het PF Concept distributeursaccount en Gateway-documentatie aan. Dit is de langste doorlooptijd in het hele traject en ligt volledig buiten onze invloed.
 4. Beperk de PF Concept-catalogus in fase 1 tot een **gecureerde selectie** (bijvoorbeeld 300 tot 500 bestsellers met Logo Express-decoratie) in plaats van alle 6.500 items. Volledige catalogus is een SEO- en beheerprobleem, geen verkoopvoordeel.
-5. Bevestig de naam van de derde leverancier voordat er ook maar één regel voor gebouwd wordt.
+5. Neem **Promidata** als gedeelde datalaag voor PF Concept en Araco. Eén importer, twee leveranciers. Vraag Araco parallel naar een order-API; tot die er is maakt de hub de Araco-inkooporder klaar voor handmatige verzending.
 
 ## Bronnen
 
@@ -59,4 +59,6 @@ De grootste risico's zitten niet in de techniek maar in **accounts en data-toega
 - PF Concept System Integration Manual v1.6 (2015, via derde partij): https://eklektika.pl/wp-content/uploads/2017/03/CSI_manual_1.6.pdf
 - PF Concept via PrintXpand Connect: https://www.printxpand.com/px-connect/suppliers/pf-concept/
 - PF Concept via Custom Gateway: https://www.custom-gateway.com/supplier-product-feeds/pf-concept/
-- Promidata Promotional Data (aggregator, incl. PF Concept): https://www.promidata.com/nl/promotional-xml-of-json-data/
+- Promidata Promotional Data (aggregator, incl. PF Concept en Araco): https://www.promidata.com/nl/promotional-xml-of-json-data/
+- Promidata connected member Araco (A86): https://www.promidata.com/connected-member/araco-international-bv-a86-3/
+- Araco International: https://www.araco.co.uk/ en https://www.eppi-online.com/2024/01/29/araco-international-specialisation-and-service/

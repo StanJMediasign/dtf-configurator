@@ -5,11 +5,11 @@
  * dit contract. De rest van de hub kent alleen deze interface.
  */
 
-export type SupplierCode = "probo" | "pfconcept" | "supplier3" | "internal";
+export type SupplierCode = "probo" | "pfconcept" | "araco" | "internal";
 
 export type PricingModel =
   | "configured" // prijs pas bekend na live configuratie (Probo)
-  | "tiered"; // staffel + decoratie + instelkosten, vooraf berekenbaar (PF Concept)
+  | "tiered"; // staffel + decoratie + instelkosten, vooraf berekenbaar (PF Concept, Araco)
 
 export interface SupplierCapabilities {
   pricingModel: PricingModel;
@@ -18,6 +18,8 @@ export interface SupplierCapabilities {
   proofApproval: boolean; // digitale proof verplicht voor productie
   statusPush: "webhook" | "polling" | "none";
   testOrders: boolean;
+  /** "api": order via API; "manual": hub bereidt de order voor, admin verstuurt (Araco tot er een API is). */
+  orderChannel: "api" | "manual";
 }
 
 export interface CatalogItem {

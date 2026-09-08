@@ -62,7 +62,7 @@ Let op: promotieartikelen hebben doorgaans een minimum aantal, zeker met bedrukk
 Als de eigen feedkoppeling te veel tijd kost of het account uitblijft, is er een tussenweg:
 
 - **Promidata "Promotional Data"**: XML- of JSON-feed / webservice met 80.000+ geconfigureerde producten van 150+ leveranciers (PF Concept, Midocean, XD Connects, Toppoint). Dagelijkse updates. Basic-abonnement: max 10 leveranciers, Premium: onbeperkt. Prijzen op aanvraag.
-- Voordeel: één datastructuur voor meerdere promo-leveranciers, direct bruikbaar voor de derde leverancier als dat er ook een promo-partij blijkt te zijn.
+- Voordeel: één datastructuur voor meerdere promo-leveranciers, en Araco (code A86) zit er ook in, dus één importer voor beide.
 - Nadeel: extra abonnement, en orders moeten alsnog naar PF Concept zelf (Promidata levert data, geen orderdoorzetting, tenzij in combinatie met hun Promotional Office ERP).
 
 Aanbeveling: eigen feedkoppeling als hoofdroute, Promidata als plan B of als versneller voor de catalogusimport.

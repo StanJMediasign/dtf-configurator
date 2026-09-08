@@ -6,7 +6,8 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 
 | Actie | Eigenaar | Blokkeert |
 |---|---|---|
-| Naam en domein van "Aracal.nl" bevestigen | Stan | Fase 4 |
+| Araco: dealeraccount bevestigen en vragen naar order-API/EDI, voorraadfeed, dropship, MOQ, decoratieprijslijst | Stan | Fase 4 |
+| Promidata: Promotional Data aanvragen met Araco (A86) en PF Concept, feedspecificatie en proeffeed | Stan, daarna dev | Fase 2 en 4 |
 | PF Concept distributeursaccount aanvragen (KvK, btw, omschrijving pinkprint.com) | Stan | Fase 2 en 3 |
 | PF Concept API/XML-specialist om Gateway-spec, feeds, dropship-voorwaarden en testomgeving vragen | Stan, daarna dev | Fase 2 en 3 |
 | Probo: apart account of apart API-token voor pinkprint.com | Stan | Fase 1 |
@@ -37,10 +38,12 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 - Dropship: neutrale verzending aan eindklant bevestigd en getest.
 - Resultaat: volledig automatische promo-orders.
 
-## Fase 4: derde leverancier (na bevestiging naam)
+## Fase 4: Araco textiel (circa 2 tot 3 weken na Promidata-feed)
 
-- Profiel bepalen (configuratie-gedreven, catalogus-gedreven, of alleen materiaal) en de bijbehorende adapter kopiëren.
-- Als het een promo-partij is: overweeg Promidata als datalaag zodat PF Concept en deze leverancier één importformaat delen.
+- Promidata-importer hergebruiken (of bouwen als PF Concept via eigen feeds loopt) voor Araco-artikelen: Nilton's, Sophie Muval, Brickstone, 4YOU.
+- Per categorie beslissen: Araco decoreert, of wij bedrukken blanco met DTF via de bestaande configurator (`decoration_route`).
+- Orderplaatsing semi-handmatig: hub maakt de inkooporder met artwork klaar, admin verstuurt. Automatiseren zodra Araco een order-API bevestigt.
+- Resultaat: caps, handdoeken, werkkleding en shirts bestelbaar, deels met eigen DTF-decoratie en hogere marge.
 
 ## Fase 5: uitbouw
 
@@ -53,7 +56,7 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 1. **Shopify of headless?** Advies: Shopify, om dezelfde reden als de DTF-configurator. Wisselen kan later, de hub blijft.
 2. **Hoe groot start de PF-catalogus?** Advies: 300 tot 500 artikelen met Logo Express, gekozen op marge en herkenbaarheid.
 3. **Eén Probo-account of apart?** Bepaalt facturatie en of Mediasign-marges en Pinkprint-marges gescheiden blijven.
-4. **Wie is de derde leverancier?** Zonder antwoord blijft fase 4 een lege plek.
+4. **Welk textiel bedrukken we zelf met DTF en welk laat Araco doen?** Bepaalt marge, doorlooptijd en hoeveel blanco voorraad we zelf aanhouden.
 
 ## Risico's
 
@@ -64,3 +67,4 @@ Inschattingen zijn indicatief en gaan uit van één ontwikkelaar met de bestaand
 | Split-shipments verwarren klanten | Klachten, retouren | Duidelijke communicatie in checkout en per-pakket track & trace |
 | Proof-flow bij promo vertraagt orders | Lagere conversie | Proof direct in de klantaccount, herinneringsmails, optie "geen proof nodig" bij herhaalorders |
 | Probo-component voldoet niet aan onze UX | Configurator opnieuw bouwen | Vanaf dag 1 achter onze eigen interface plaatsen zodat vervanging lokaal blijft |
+| Araco biedt geen order-API | Araco-orders blijven handwerk | Hub bereidt de order volledig voor, admin verstuurt met één klik; volume bepaalt of dit acceptabel blijft |

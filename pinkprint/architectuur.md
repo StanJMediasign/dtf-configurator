@@ -20,9 +20,9 @@
 [Pinkprint Supplier Hub]  (Remix/Node, Postgres via Prisma, job queue, S3)
    |        |          |             |
    v        v          v             v
-[Probo]  [PF Concept] [Leverancier 3] [Intern: DTF-configurator]
- REST     XML feeds +   ?              bestaande jobService
-          Gateway
+[Probo]  [PF Concept] [Araco]        [Intern: DTF-configurator]
+ REST     XML feeds +   Promidata-feed  bestaande jobService
+          Gateway       + dealershop    (blanco textiel van Araco)
 ```
 
 ## Bouwstenen van de hub
@@ -35,6 +35,8 @@
 | Frequentie | Dagelijks producten, prijzen live | Dagelijks volledige import, voorraad zo vaak als PF toestaat |
 | Naar Shopify | Eén Shopify-product per Pinkprint-product; configuratie-opties niet als varianten maar als line item properties (afmeting, materiaal, afwerking) | Eén Shopify-product per artikel, varianten voor kleur/maat, decoratiekeuze als line item property |
 | Metafields | `pinkprint.supplier = probo`, `pinkprint.supplier_sku`, `pinkprint.config_schema` | `pinkprint.supplier = pfconcept`, `pinkprint.supplier_sku`, `pinkprint.moq`, `pinkprint.print_codes[]` |
+
+Araco volgt de PF Concept-kolom, met als bron de Promidata-feed (code A86) in plaats van PF's eigen XML. Eén Promidata-importer bedient beide leveranciers als PF Concept ook via Promidata wordt ingelezen. Extra metafield voor textiel: `pinkprint.decoration_route = supplier | internal_dtf`, zodat de hub weet of Araco decoreert of dat wij het blanco artikel zelf met DTF bedrukken.
 
 Waarom geen 6.500 PF-artikelen in één keer: Shopify kan het aan (productaantal is geen limiet, varianten wel: 100 per product in het oude model, 2.000 in het nieuwe), maar de winkel wordt onbeheersbaar en de SEO verdunt. Gecureerde selectie in fase 1, uitbreiden per categorie op basis van vraag.
 
@@ -74,6 +76,8 @@ Uniform statusmodel in de hub, gemapt vanuit elke leverancier:
 | `delivered` | afgeleverd | afgeleverd | afgeleverd |
 | `on_hold` / `error` | afgekeurd bestand | afwijking / MOQ | preflight-fout |
 
+Araco: zolang er geen order-API is, zet de hub de sub-order op `received` na handmatige bevestiging vanuit de admin en worden statussen handmatig of via e-mailparsing bijgewerkt.
+
 Probo pusht via webhooks. Voor PF Concept moet blijken of er webhooks zijn; anders pollen we op een interval.
 
 ### 6. Datamodel (Prisma, hoofdlijnen)
@@ -95,9 +99,9 @@ StatusEvent         subOrderId, from, to, source, at
 | Optie | Oordeel |
 |---|---|
 | Volledig headless (eigen Remix-storefront, eigen checkout) | Meer controle over configurator-UX, maar we bouwen checkout, betalingen, btw, accounts en fraudecontrole zelf. Pas overwegen als Shopify aantoonbaar in de weg zit |
-| WooCommerce (Probo heeft een officiële plugin) | Snelle Probo-start, maar PF Concept en de derde leverancier moeten alsnog custom, en we verlaten onze Shopify-kennis en de DTF-app |
+| WooCommerce (Probo heeft een officiële plugin) | Snelle Probo-start, maar PF Concept en Araco moeten alsnog custom, en we verlaten onze Shopify-kennis en de DTF-app |
 | Alleen een integratieplatform (PrintXpand Connect, Custom Gateway) | Ze hebben PF Concept al voorgebouwd. Maar het zijn dure platformen gericht op grotere printers, en Probo zit er niet standaard in. Als versneller voor PF Concept eventueel te overwegen, niet als fundament |
-| Promidata als PIM voor promo-artikelen | Goede data, geen orderdoorzetting. Plan B voor de catalogusimport van PF Concept en een eventuele tweede promo-leverancier |
+| Promidata als PIM voor promo-artikelen | Goede data, geen orderdoorzetting. Voor Araco de enige gestructureerde databron, voor PF Concept een alternatief voor de eigen feeds. Advies: gebruiken als gedeelde importer voor beide |
 
 ## Beveiliging en beheer
 
